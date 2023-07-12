@@ -1,0 +1,45 @@
+{% extends 'shopapp/base.html'%}
+{% block title %}
+Base Title
+{% endblock%}
+
+
+{% block body %}
+<h1>
+    Hello Shop Index
+</h1>
+<div>
+    <ul>
+        {% for name, price in products%}
+        <li>{{name}} for ({{name|length}}) ${{price}}</li>
+        {% if name|length_is:'3' %}
+        <span>(lucky product)</span>
+        {% endif %}
+        {% empty %}
+        No product here
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    {% regroup auto|dictsort:"country" by country as country_list %}
+
+
+    <ul>
+
+        {% for country in country_list %}
+        <li>{{ country.grouper }}</li>
+        <ul>
+            {% for city in country.list %}
+            <li>{{ city.name }}: {{ city.price }}: {{ city.currency }}</li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    Timer : {{ time_running }}
+</div>
+<div>
+    {% lorem 3 p random %}
+</div>
+{% endblock%}

@@ -1,0 +1,18 @@
+{% extends 'football_site/base_football.html' %}
+{% block title %}
+Base Title
+{% endblock%}
+
+
+{% block body %}
+<h1>
+    Таблица
+</h1>
+
+<div>
+    Timer : {{ time_running }}
+</div>
+<div>
+    {% lorem  p random %}
+</div>
+{% endblock%}
