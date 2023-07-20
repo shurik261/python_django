@@ -7,9 +7,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write('Create product')
         products_names = [
-            'bmw',
-            'toyota',
-            'жигули',
+            'Bmw',
+            'Toyota',
+            'Жигули',
         ]
         for products_name in products_names:
             product, create = Product.objects.get_or_create(name=products_name)

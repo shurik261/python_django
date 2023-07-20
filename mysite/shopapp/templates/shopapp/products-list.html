@@ -9,9 +9,10 @@ Products List
         <div>
             {%for product in products%}
                 <div>
-                    <p> Name: {{products.name}}</p>
-                    <p> Pricee: {{products.price}}</p>
-                    <p> Discound: {% firstof products.discound 'no discound'%}</p>
+                    <p> Name: {{product.name}}</p>
+                    <p> Pricee: {{product.price}}</p>
+                    <p> Discount: {% firstof product.discount 'no discount'%}</p>
+
 
                 </div>
             {%endfor%}
