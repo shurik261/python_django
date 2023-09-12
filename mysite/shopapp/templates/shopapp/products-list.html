@@ -20,5 +20,9 @@ Products List
     {%else%}
         <h3>No products</h3>
     {%endif%}
-
+    <div>
+    <a href="{% url 'shopapp:create_products'%}">
+        Create a new product
+    </a>
+</div>
 {% endblock%}
