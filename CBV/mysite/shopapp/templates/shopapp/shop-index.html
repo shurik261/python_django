@@ -1,33 +1,36 @@
-{% extends 'shopapp/base.html' %}
-
+{% extends 'shopapp/base.html'%}
 {% block title %}
-  Shop Index
-{% endblock %}
+Base Title
+{% endblock%}
 
 
 {% block body %}
-  <h1>Hello Shop Index!</h1>
-
-  <div>
+<h1>
+    Hello Shop Index
+</h1>
+<div>
     <ul>
-      {% for name, price in products %}
-        <li>{{ name }} ({{ name|length }}) for ${{ price }}</li>
-        {% if name|length_is:'7' %}
-          <span>Lucky product!</span>
+        {% for name, price in products%}
+        <li>{{name}} for ({{name|length}}) ${{price}}</li>
+        {% if name|length_is:'3' %}
+        <span>(lucky product)</span>
         {% endif %}
-      {% empty %}
-        No products here
-      {% endfor %}
-
+        {% empty %}
+        No product here
+        {% endfor %}
     </ul>
-  </div>
-
-  <div>
-    Time running: {{ time_running }}
-  </div>
-
-  <div>
+</div>
+    <div>
+        <a href="{% url 'shopapp:orders_create'%}">Create order</a>
+    </div>
+    <div>
+        <a href="{%url 'shopapp:orders_list'%}">Having orders</a>
+    </div>
+<br>
+<div>
+    Timer : {{ time_running }}
+</div>
+<div>
     {% lorem 3 p random %}
-  </div>
-
-{% endblock %}
+</div>
+{% endblock%}

@@ -9,7 +9,7 @@ Products List
         <div>
             {%for product in products%}
                 <div>
-                    <p> Name: {{product.name}}</p>
+                    <p><a href="{%url 'shopapp:products_details' pk=product.pk%}">Name: {{product.name}}</a></p>
                     <p> Pricee: {{product.price}}</p>
                     <p> Discount: {% firstof product.discount 'no discount'%}</p>
 

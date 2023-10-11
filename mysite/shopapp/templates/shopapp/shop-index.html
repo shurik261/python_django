@@ -20,22 +20,13 @@ Base Title
         {% endfor %}
     </ul>
 </div>
-<div>
-    {% regroup auto|dictsort:"country" by country as country_list %}
-
-
-    <ul>
-
-        {% for country in country_list %}
-        <li>{{ country.grouper }}</li>
-        <ul>
-            {% for city in country.list %}
-            <li>{{ city.name }}: {{ city.price }}: {{ city.currency }}</li>
-            {% endfor %}
-        </ul>
-        {% endfor %}
-    </ul>
-</div>
+    <div>
+        <a href="{% url 'shopapp:orders_create'%}">Create order</a>
+    </div>
+    <div>
+        <a href="{%url 'shopapp:orders_list'%}">Having orders</a>
+    </div>
+<br>
 <div>
     Timer : {{ time_running }}
 </div>
