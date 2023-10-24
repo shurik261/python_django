@@ -3,7 +3,7 @@ from django.core.cache import cache
 
 
 class IPThrottleMiddleware:
-    def __init__(self, get_response, rate_limit=30, period=60):
+    def __init__(self, get_response, rate_limit=300, period=60):
         self.get_response = get_response
         self.rate_limit = rate_limit
         self.period = period

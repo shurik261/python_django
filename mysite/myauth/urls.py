@@ -6,7 +6,9 @@ from .views import (
     set_session_view,
     get_session_view,
     logout_view,
-    LogoutView,
+    MyLogoutView,
+    AboutMeView,
+    RegisterView,
 )
 
 app_name = 'myauth'
@@ -16,9 +18,12 @@ urlpatterns = [
              template_name='myauth/login.html',
              redirect_authenticated_user=True,
          ),
-         name='index'),
+         name='login'),
     # path('logout/', logout_view, name='logout'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    path('logout/', MyLogoutView.as_view(), name='logout'),
+    path('about-me/', AboutMeView.as_view(), name='about-me'),
+    path('register/', RegisterView.as_view(), name='register'),
+
     path('cookie/get/', get_cookie_view, name='cookie-get'),
     path('cookie/set/', set_cookie_view, name='cookie-set'),
 
