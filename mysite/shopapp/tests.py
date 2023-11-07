@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.test import TestCase
 from shopapp.utils import add_two_number
 from django.urls import reverse
@@ -29,4 +31,82 @@ class ProductCreateViewTestCase(TestCase):
         self.assertRedirects(response, reverse('shopapp:products_list'))
         self.assertTrue(
             Product.objects.filter(name=self.product_name).exists()
+        )
+
+class ProductDetailViewTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.product = Product.objects.create(name='Best product')
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.product.delete()
+
+    def test_get_product(self):
+        response = self.client.get(
+            reverse('shopapp:product_details', kwargs={'pk': self.product.pk})
+        )
+        self.assertEquals(response.status_code, 200)
+
+    def test_get_product_and_chek_content(self):
+        response = self.client.get(
+            reverse('shopapp:product_details', kwargs={'pk': self.product.pk})
+        )
+        self.assertContains(response, self.product.name)
+
+class ProductsListViewTestCase(TestCase):
+    fixtures = [
+        'product_fixture.json',
+    ]
+    def test_products(self):
+        response = self.client.get(reverse('shopapp:products_list'))
+        self.assertQuerysetEqual(
+        qs=Product.objects.filter(archived=False).all(),
+            values=(p.pk for p in response.context['products']),
+            transform=lambda p: p.pk,
+        )
+
+
+class OrderListViewTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.user = User.objects.create_user(username='bob_test', password='qwerty')
+    @classmethod
+    def tearDownClass(cls):
+        cls.user.delete()
+    def setUp(self) -> None:
+        self.client.force_login(self.user)
+    def test_order_list_view(self):
+        response = self.client.get(reverse('shopapp:orders_list'))
+        self.assertContains(response, 'Orders')
+
+    def test_order_list_view_not_authenticated(self):
+        self.client.logout()
+        response = self.client.get(reverse('shopapp:orders_list'))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(str(settings.LOGIN_URL), response.url)
+
+
+class ProductsExportViewTestCase(TestCase):
+    fixtures = [
+        'product_fixture.json',
+    ]
+
+    def test_get_product_view(self):
+        response = self.client.get(reverse('shopapp:products_export'))
+        self.assertEqual(response.status_code, 200)
+        products = Product.objects.order_by('pk').all()
+        expected_data = [
+            {
+                'pk': product.pk,
+                'name': product.name,
+                'price': product.price,
+                'archived': product.archived,
+            }
+            for product in products
+        ]
+        products_data = response.json
+        self.assertEqual(
+            expected_data['products'],
+            products_data
         )
