@@ -1,7 +1,8 @@
 from timeit import default_timer
 
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import Group
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
@@ -139,3 +140,19 @@ class OrderUpdateView(UpdateView):
 class OrderDeleteView(DeleteView):
     model = Order
     success_url = reverse_lazy('shopapp:orders_list')
+
+class OrderExportView(View):
+
+    def get(self, request: HttpRequest) -> JsonResponse:
+        orders = Order.objects.order_by('pk').all()
+        orders_data = [
+            {
+                'pk': order.pk,
+                'delivery_address': order.delivery_address,
+                'promocode': order.promocode,
+                'user_id': order.user,
+                'products_id': order.products,
+            }
+            for order in orders
+        ]
+        return JsonResponse({'orders': orders_data})
