@@ -13,6 +13,7 @@ class AddTwoNumberTestCase(TestCase):
         result = add_two_number(2, 3)
         self.assertEquals(result, 5)
 
+
 class ProductCreateViewTestCase(TestCase):
     def setUp(self):
         self.product_name = ''.join(choices(ascii_letters, k=10))
@@ -33,6 +34,7 @@ class ProductCreateViewTestCase(TestCase):
         self.assertTrue(
             Product.objects.filter(name=self.product_name).exists()
         )
+
 
 class ProductDetailViewTestCase(TestCase):
     @classmethod
@@ -55,14 +57,16 @@ class ProductDetailViewTestCase(TestCase):
         )
         self.assertContains(response, self.product.name)
 
+
 class ProductsListViewTestCase(TestCase):
     fixtures = [
         'product_fixture.json',
     ]
+
     def test_products(self):
         response = self.client.get(reverse('shopapp:products_list'))
         self.assertQuerysetEqual(
-        qs=Product.objects.filter(archived=False).all(),
+            qs=Product.objects.filter(archived=False).all(),
             values=(p.pk for p in response.context['products']),
             transform=lambda p: p.pk,
         )
@@ -72,11 +76,14 @@ class OrderListViewTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = User.objects.create_user(username='bob_test', password='qwerty')
+
     @classmethod
     def tearDownClass(cls):
         cls.user.delete()
+
     def setUp(self) -> None:
         self.client.force_login(self.user)
+
     def test_order_list_view(self):
         response = self.client.get(reverse('shopapp:orders_list'))
         self.assertContains(response, 'Orders')
@@ -112,13 +119,14 @@ class ProductsExportViewTestCase(TestCase):
             expected_data
         )
 
+
 class OrderDetailViewTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = User.objects.create_user(username='alex', password='qwerty')
-        view_order_permissions = Permission.objects.get(codename='view_order',)
-
+        view_order_permissions = Permission.objects.get(codename='view_order', )
         cls.user.user_permissions.add(view_order_permissions)
+        cls.user.save()
 
     @classmethod
     def tearDownClass(cls):
@@ -139,17 +147,24 @@ class OrderDetailViewTestCase(TestCase):
         order_in_response = response.context['order']
         self.assertEqual(order_in_response.pk, self.order.pk)
 
+
 class OrdersExportViewTestCase(TestCase):
+    fixtures = [
+        'product_fixture.json',
+        'order_fixture.json',
+        'user_fixture.json'
+    ]
+
     @classmethod
     def setUpClass(cls):
         cls.user = User.objects.create_user(username='bob', password='qwerty', is_staff=True)
+
     @classmethod
     def tearDownClass(cls):
         cls.user.delete()
 
     def setUp(self) -> None:
         self.client.force_login(self.user)
-
 
     def test_get_orders_view(self):
         response = self.client.get(reverse('shopapp:orders_export'))
@@ -160,8 +175,8 @@ class OrdersExportViewTestCase(TestCase):
                 'pk': order.pk,
                 'delivery_address': order.delivery_address,
                 'promocode': order.promocode,
-                'user_id': order.user,
-                'products_id': order.products,
+                'user_id': order.user.id,
+                'products_id': [product.id for product in order.products.all()],
             }
             for order in orders
         ]
