@@ -9,9 +9,9 @@ class OrderDetailViewTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = User.objects.create_user(username='alex', password='qwerty')
-        view_order_permissions = Permission.objects.get(codename='view_order',)
-
+        view_order_permissions = Permission.objects.get(codename='view_order', )
         cls.user.user_permissions.add(view_order_permissions)
+        cls.user.save()
 
     @classmethod
     def tearDownClass(cls):
@@ -32,17 +32,24 @@ class OrderDetailViewTestCase(TestCase):
         order_in_response = response.context['order']
         self.assertEqual(order_in_response.pk, self.order.pk)
 
+
 class OrdersExportViewTestCase(TestCase):
+    fixtures = [
+        'product_fixture.json',
+        'order_fixture.json',
+        'user_fixture.json'
+    ]
+
     @classmethod
     def setUpClass(cls):
         cls.user = User.objects.create_user(username='bob', password='qwerty', is_staff=True)
+
     @classmethod
     def tearDownClass(cls):
         cls.user.delete()
 
     def setUp(self) -> None:
         self.client.force_login(self.user)
-
 
     def test_get_orders_view(self):
         response = self.client.get(reverse('shopapp:orders_export'))
@@ -53,8 +60,8 @@ class OrdersExportViewTestCase(TestCase):
                 'pk': order.pk,
                 'delivery_address': order.delivery_address,
                 'promocode': order.promocode,
-                'user_id': order.user,
-                'products_id': order.products,
+                'user_id': order.user.id,
+                'products_id': [product.id for product in order.products.all()],
             }
             for order in orders
         ]
