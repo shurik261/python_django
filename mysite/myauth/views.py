@@ -39,15 +39,9 @@ class UserListView(View):
 
 class UserProfileView(View):
     template_name = 'myauth/user_profile.html'
-
     def get(self, request, username, *args, **kwargs):
         user = get_object_or_404(User, username=username)
-        try:
-            user_profile = user.profile
-        except Profile.DoesNotExist:
-            user_profile = None
-
-        return render(request, self.template_name, {'user_profile': user_profile})
+        return render(request, self.template_name, {'user_profile': user.profile})
 
 class RegisterView(CreateView):
     form_class = UserCreationForm
