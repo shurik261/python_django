@@ -1,14 +1,22 @@
 {%extends 'shopapp/base.html'%}
 
 {%block title%}
-    Confirm archive {{object.pk}}
+    Confirm delete {{object.pk}}
 {%endblock%}
 
 {%block body%}
-    <h1>Do you really want to archive {{object.name}}?</h1>
+    <h1>Вы действительно хотите удалить или архивировать {{object.name}}?</h1>
     <br>
     <div>
         <a href="{% url 'shopapp:products_details' pk=object.pk%}">Back to product</a>
+    </div>
+    <br>
+    <div>
+        <form method="post">
+            {%csrf_token%}
+            {{form.as_p}}
+            <button type="submit">Delete</button>
+        </form>
     </div>
     <br>
     <div>
@@ -19,5 +27,4 @@
         </form>
     </div>
     <br>
-
 {%endblock%}

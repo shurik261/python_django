@@ -1,16 +1,53 @@
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.contrib.auth.views import LogoutView
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView
+
+from .forms import AvatarUpdateForm
 from .models import Profile
 from django.views import View
 
-class AboutMeView(TemplateView):
+class AboutMeView(View):
     template_name = 'myauth/about-me.html'
+
+    def get(self, request, *args, **kwargs):
+        user_profile, created = Profile.objects.get_or_create(user=request.user)
+        form = AvatarUpdateForm(instance=user_profile)
+        return render(request, self.template_name, {'user_profile': user_profile, 'form': form})
+
+    def post(self, request, *args, **kwargs):
+        user_profile, created = Profile.objects.get_or_create(user=request.user)
+        form = AvatarUpdateForm(request.POST, request.FILES, instance=user_profile)
+
+        if form.is_valid():
+            form.save()
+            return redirect('myauth:about-me')
+
+        return render(request, self.template_name, {'user_profile': user_profile, 'form': form})
+
+class UserListView(View):
+    template_name = 'myauth/user_list.html'
+
+    def get(self, request, *args, **kwargs):
+        users = User.objects.all()
+        return render(request, self.template_name, {'users': users})
+
+class UserProfileView(View):
+    template_name = 'myauth/user_profile.html'
+
+    def get(self, request, username, *args, **kwargs):
+        user = get_object_or_404(User, username=username)
+        try:
+            user_profile = user.profile
+        except Profile.DoesNotExist:
+            user_profile = None
+
+        return render(request, self.template_name, {'user_profile': user_profile})
 
 class RegisterView(CreateView):
     form_class = UserCreationForm
