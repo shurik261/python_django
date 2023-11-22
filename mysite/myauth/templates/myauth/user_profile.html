@@ -8,11 +8,11 @@
   <h1>About info1</h1>
   {% if user.is_authenticated%}
     <h2>Detail</h2>
-    <p>User: {{user.username}}</p>
-    <p>First name: {{user.first_name}}</p>
-    <p>Last name: {{user.last_name}}</p>
-    <p>Email: {{user.email}}</p>
-    <p>Bio: {{user.profile1.bio}}</p>
+    <p>User: {{user_profile.user.username}}</p>
+    <p>First name: {{user_profile.user.first_name}}</p>
+    <p>Last name: {{user_profile.user.last_name}}</p>
+    <p>Email: {{user_profile.user.email}}</p>
+    <p>Bio: {{user_profile.user.profile.bio}}</p>
     {% if user_profile.avatar %}
         <img src="{{ user_profile.avatar.url }}" alt="User Avatar">
     {% else %}
