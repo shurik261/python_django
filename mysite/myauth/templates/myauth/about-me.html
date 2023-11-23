@@ -17,12 +17,13 @@
         <p>First name: {{ user.first_name }}</p>
         <p>Last name: {{ user.last_name }}</p>
         <p>Email: {{ user.email }}</p>
-        <p>Bio: {{ user.profile.bio }}</p> {# Обратите внимание на изменение здесь #}
-            <form method="post" enctype="multipart/form-data">
+        <p>Bio: {{ user.profile.bio }}</p>
+
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Update Avatar</button>
-            </form>
+        </form>
     {% else %}
         <h2>User is anonymous</h2>
     {% endif %}
@@ -30,7 +31,5 @@
         <p>
             <a href="{% url 'myauth:user_list' %}">User list</a>
         </p>
-
-
     </div>
 {% endblock %}

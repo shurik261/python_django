@@ -5,19 +5,31 @@
 {%endblock%}
 
 {%block body%}
-  <h1>About info1</h1>
+  <h1>Detail</h1>
   {% if user.is_authenticated%}
-    <h2>Detail</h2>
+
+    {% if user_profile.avatar %}
+        <img src="{{ user_profile.avatar.url }}" alt="User Avatar">
     <p>User: {{user_profile.user.username}}</p>
     <p>First name: {{user_profile.user.first_name}}</p>
     <p>Last name: {{user_profile.user.last_name}}</p>
     <p>Email: {{user_profile.user.email}}</p>
     <p>Bio: {{user_profile.user.profile.bio}}</p>
-    {% if user_profile.avatar %}
-        <img src="{{ user_profile.avatar.url }}" alt="User Avatar">
+    <p>
+      {% if user.is_staff or user == user_profile.user %}
+        <a href="{% url 'myauth:about-me' %}">Изменить аватар</a>
+      {% endif %}
+    </p>
+
     {% else %}
         <p>No avatar available for this user.</p>
     {% endif %}
+    <p>
+      <a href="{% url 'myauth:user_list'%}">
+        Back to user list
+      </a>
+    </p>
+
   {%else%}
     <h2>User is anonymous</h2>
   {%endif%}

@@ -7,9 +7,14 @@ user list
 {%block body%}
 <h1>User List</h1>
 
-<ul>
-    {% for user in users %}
-      <li><a href="{% url 'myauth:user_profile' username=user.username %}">{{ user.username }}</a></li>
-    {% endfor %}
-</ul>
+    <ul>
+        {% for user in users %}
+          <li><a href="{% url 'myauth:user_profile' username=user.username %}">{{ user.username }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'myauth:about-me'%}">
+        Back to about info
+    </a>
+
+
 {%endblock%}

@@ -6,42 +6,38 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DetailView
 
 from .forms import AvatarUpdateForm
 from .models import Profile
 from django.views import View
 
-class AboutMeView(View):
+class AboutMeView(UpdateView):
     template_name = 'myauth/about-me.html'
+    model = Profile
+    fields = ['avatar']
+    success_url = reverse_lazy('myauth:about-me')
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user == self.get_object().user
+    def get_object(self, queryset=None):
+        return self.request.user.profile
 
-    def get(self, request, *args, **kwargs):
-        user_profile, created = Profile.objects.get_or_create(user=request.user)
-        form = AvatarUpdateForm(instance=user_profile)
-        return render(request, self.template_name, {'user_profile': user_profile, 'form': form})
 
-    def post(self, request, *args, **kwargs):
-        user_profile, created = Profile.objects.get_or_create(user=request.user)
-        form = AvatarUpdateForm(request.POST, request.FILES, instance=user_profile)
-
-        if form.is_valid():
-            form.save()
-            return redirect('myauth:about-me')
-
-        return render(request, self.template_name, {'user_profile': user_profile, 'form': form})
-
-class UserListView(View):
+class UserListView(ListView):
     template_name = 'myauth/user_list.html'
+    model = User
+    context_object_name = 'users'
 
-    def get(self, request, *args, **kwargs):
-        users = User.objects.all()
-        return render(request, self.template_name, {'users': users})
 
-class UserProfileView(View):
+class UserProfileDetailView(DetailView):
     template_name = 'myauth/user_profile.html'
-    def get(self, request, username, *args, **kwargs):
-        user = get_object_or_404(User, username=username)
-        return render(request, self.template_name, {'user_profile': user.profile})
+    model = User
+    context_object_name = 'user_profile'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+
+    def get_object(self, queryset=None):
+        return self.get_queryset().get(username=self.kwargs['username']).profile
 
 class RegisterView(CreateView):
     form_class = UserCreationForm
