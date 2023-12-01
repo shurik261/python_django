@@ -1,20 +1,21 @@
 {% extends 'shopapp/base.html'%}
+{% load i18n %}
 {% block title %}
-  Order List
+  {%translate 'Order List' %}
 {% endblock%}
 
 {% block body %}
-  <h1>Orders </h1>
+  <h1>{%translate 'Orders' %} </h1>
   {%if object_list %}
     <div>
     {% for order in object_list %}
       <div>
-        <h2>Order # {{order.pk}}</h2>
-        <p> Order by: {% firstof order.user.username order.user.first_name%}</p>
-        <p>Promocode: <code>{{order.promocode}}</code></p>
-        <p>Delivery address: {{order.delivery_address}}</p>
+        <h2>{%translate 'Order' %} # {{order.pk}}</h2>
+        <p> {%translate 'Order by' %}: {% firstof order.user.username order.user.first_name%}</p>
+        <p>{%translate 'Promocode' %}: <code>{{order.promocode}}</code></p>
+        <p>{%translate 'Delivery address' %}: {{order.delivery_address}}</p>
         <div>
-          Products in order
+          {%translate 'Products in order' %}
           <ul>
           {%for product in order.products.all%}
             <li>{{product.name}} for ${{product.price}}</li>
@@ -23,13 +24,13 @@
           </ul>
         </div>
         <div>
-          <p><a href="{% url 'shopapp:orders_details' pk=order.pk%}">Details {{order.pk}}</a></p>
+          <p><a href="{% url 'shopapp:orders_details' pk=order.pk%}">{%translate 'Details' %}{{order.pk}}</a></p>
         </div>
       </div>
     {%endfor%}
     </div>
   {%else%}
-    <h3> No order yet </h3>
+    <h3> {%translate 'No order yet' %}t </h3>
   {%endif%}
-<div><p><a href="{% url 'shopapp:index'%}" class="a1">Back</a></p></div>
+<div><p><a href="{% url 'shopapp:index'%}" class="a1">{%translate 'Back' %}</a></p></div>
 {% endblock%}

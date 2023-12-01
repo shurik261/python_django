@@ -1,0 +1,245 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-12-01 15:02+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 :  2);\n"
+
+#: .\myauth\views.py:17
+msgid "Hello World!"
+msgstr "Привет Мир!"
+
+#: .\myauth\views.py:22
+#, python-brace-format
+msgid "one product"
+msgid_plural "{count} products"
+msgstr[0] "{count} товар"
+msgstr[1] "{count} товара"
+msgstr[2] "{count} товаров"
+
+#: .\mysite\settings.py:133
+msgid "English"
+msgstr ""
+
+#: .\mysite\settings.py:134
+msgid "Russian"
+msgstr ""
+
+#: .\mysite\settings.py:135
+msgid "Kazakh"
+msgstr ""
+
+#: .\shopapp\templates\shopapp\order_list.html:4
+msgid "Order List"
+msgstr "Список заказов"
+
+#: .\shopapp\templates\shopapp\order_list.html:8
+msgid "Orders"
+msgstr "Заказы"
+
+#: .\shopapp\templates\shopapp\order_list.html:13
+msgid "Order"
+msgstr "Заказ"
+
+#: .\shopapp\templates\shopapp\order_list.html:14
+msgid "Order by"
+msgstr "Заказать по"
+
+#: .\shopapp\templates\shopapp\order_list.html:15
+msgid "Promocode"
+msgstr "Промокод"
+
+#: .\shopapp\templates\shopapp\order_list.html:16
+msgid "Delivery address"
+msgstr "Адрес доставки"
+
+#: .\shopapp\templates\shopapp\order_list.html:18
+msgid "Products in order"
+msgstr "Продукты в заказе"
+
+#: .\shopapp\templates\shopapp\order_list.html:27
+msgid "Details"
+msgstr "Детали"
+
+#: .\shopapp\templates\shopapp\order_list.html:33
+msgid "No order yet"
+msgstr "Приказа пока нет"
+
+#: .\shopapp\templates\shopapp\order_list.html:35
+msgid "Back"
+msgstr "Назад"
+
+#: .\shopapp\templates\shopapp\product-details.html:6
+#: .\shopapp\templates\shopapp\product-details.html:10
+msgid "Product"
+msgstr "Товар"
+
+#: .\shopapp\templates\shopapp\product-details.html:12
+msgid "Description"
+msgstr "Описание"
+
+#: .\shopapp\templates\shopapp\product-details.html:13
+#: .\shopapp\templates\shopapp\products-list.html:24
+msgid "Price"
+msgstr "Цена"
+
+#: .\shopapp\templates\shopapp\product-details.html:14
+#: .\shopapp\templates\shopapp\products-list.html:26
+msgid "Discount"
+msgstr "Скидка"
+
+#: .\shopapp\templates\shopapp\product-details.html:15
+msgid "Archived"
+msgstr "Архив"
+
+#: .\shopapp\templates\shopapp\product-details.html:19
+msgid "Image"
+msgstr "Изображения"
+
+#: .\shopapp\templates\shopapp\product-details.html:22
+msgid ""
+"\n"
+"                Only one picture is available in the product\n"
+"                "
+msgid_plural ""
+"\n"
+"                There are %(image_count)s pictures available in the product\n"
+"                "
+msgstr[0] ""
+"\n"
+"            В продукте доступна только одна картинка\n"
+"            "
+msgstr[1] ""
+"\n"
+"            В товаре  доступны %(image_count)s картинки \n"
+"            "
+msgstr[2] ""
+"\n"
+"            В товаре  доступны %(image_count)s картинок            "
+
+#: .\shopapp\templates\shopapp\product-details.html:35
+msgid "No images uploaded yet"
+msgstr "Изображения еще не загружены"
+
+#: .\shopapp\templates\shopapp\product-details.html:42
+#, python-format
+msgid ""
+"\n"
+"    <div>\n"
+"        <a href=\"%(products_update)s\">Update product %(product.pk)s</a>\n"
+"    </div>\n"
+"    <div>\n"
+"        <a href=\"%(products_delete)s\">Archive product </a>\n"
+"    </div>\n"
+"    <div>\n"
+"        <a href=\"%(products_list)s\">Back in products</a>\n"
+"    </div>\n"
+"    "
+msgstr ""
+"\n"
+"    <div>\n"
+"        <a href=\"%(products_update)s\">Обновить продукт %(product.pk)s</a>\n"
+"    </div>\n"
+"    <div>\n"
+"        <a href=\"%(products_delete)s\">Архивный продукт </a>\n"
+"    </div>\n"
+"    <div>\n"
+"        <a href=\"%(products_list)s\">Вернуться в продукты</a>\n"
+"    </div>\n"
+"    "
+
+#: .\shopapp\templates\shopapp\products-list.html:6
+msgid "Products List"
+msgstr "Список продуктов"
+
+#: .\shopapp\templates\shopapp\products-list.html:10
+msgid "Products"
+msgstr "Продукты"
+
+#: .\shopapp\templates\shopapp\products-list.html:13
+#, python-format
+msgid ""
+"\n"
+"            There is only one product\n"
+"            "
+msgid_plural ""
+"\n"
+"            There ara %(products_count)s products\n"
+"            "
+msgstr[0] ""
+"\n"
+"            Доступен %(products_count)s товар\n"
+"            "
+msgstr[1] ""
+"\n"
+"            Доступно %(products_count)s товара\n"
+"            "
+msgstr[2] ""
+"\n"
+"            Доступно %(products_count)s товаров\n"
+"            "
+
+#: .\shopapp\templates\shopapp\products-list.html:23
+msgctxt "product name"
+msgid "Name"
+msgstr "Имя"
+
+#: .\shopapp\templates\shopapp\products-list.html:25
+msgid "no discount"
+msgstr "нет скидки"
+
+#: .\shopapp\templates\shopapp\products-list.html:29
+msgid ""
+"\n"
+"                    Only one picture is available in the product\n"
+"                    "
+msgid_plural ""
+"\n"
+"                    There are %(image_count)s pictures available in the "
+"product\n"
+"                    "
+msgstr[0] ""
+"\n"
+"            В продукте доступна только одна картинка\n"
+"            "
+msgstr[1] ""
+"\n"
+"            В товаре  доступны %(image_count)s картинки \n"
+"            "
+msgstr[2] ""
+"\n"
+"            В товаре  доступны %(image_count)s картинок            "
+
+#: .\shopapp\templates\shopapp\products-list.html:44
+msgid "Create a new product"
+msgstr "Создать товар"
+
+#: .\shopapp\templates\shopapp\products-list.html:49
+msgid ""
+"\n"
+"            <h3>'No products'</h3>\n"
+"            <a href=\"%(create_product_url)s\">\n"
+"                'Create a new product'\n"
+"            </a>\n"
+"        "
+msgstr ""
+"\n"
+"            <h3>'Пока нет товара'</h3>\n"
+"            <a href=\"create_product_url\">\n"
+"                'Создать товар'\n"
+"            </a>\n"
+"        "
