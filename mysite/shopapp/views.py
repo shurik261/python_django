@@ -9,8 +9,40 @@ from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, \
     PermissionDenied
+
 from .models import Product, Order, ProductImage
 from .forms import GroupForm, ProductForm
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.viewsets import ModelViewSet
+from .serializers import ProductSerializer, OrderSerializer
+
+
+class ProductViewSet(ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [
+        SearchFilter,
+        DjangoFilterBackend,
+        OrderingFilter,
+    ]
+    search_fields = ['name', 'description', ]
+    filterset_fields = ['name', 'price', 'description', 'discount', 'archived', ]
+    ordering_fields = ['pk', 'name', 'price', 'discount', ]
+
+
+class OrderViewSet(ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    filter_backends = [
+        SearchFilter,
+        DjangoFilterBackend,
+        OrderingFilter,
+    ]
+    search_fields = ['user', 'products', 'delivery_address', 'promocode', ]
+    filterset_fields = ['user', 'products', 'delivery_address', 'promocode', ]
+    ordering_fields = ['pk', 'user', 'products', 'delivery_address', ]
 
 
 class ShopIndexView(View):
@@ -101,6 +133,7 @@ class ProductUpdateView(UserPassesTestMixin, UpdateView):
             )
         return response
 
+
 class ProductDeleteView(DeleteView):
     model = Product
     success_url = reverse_lazy('shopapp:products_list')
@@ -150,6 +183,7 @@ class OrderUpdateView(UpdateView):
 class OrderDeleteView(DeleteView):
     model = Order
     success_url = reverse_lazy('shopapp:orders_list')
+
 
 class OrderExportView(View):
 
