@@ -1,14 +1,20 @@
-from timeit import default_timer
+"""
+В этом модуле лежат различные наборы представлений.
 
-from django.contrib.auth.decorators import user_passes_test
+Разные view для интернет-магазина: по товарам, заказам и т.д.
+"""
+from timeit import default_timer
 from django.contrib.auth.models import Group
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, \
+from django.views.generic import ListView, DetailView, \
+    CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, \
+    PermissionRequiredMixin, UserPassesTestMixin, \
     PermissionDenied
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 
 from .models import Product, Order, ProductImage
 from .forms import GroupForm, ProductForm
@@ -18,8 +24,14 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from .serializers import ProductSerializer, OrderSerializer
 
-
+@extend_schema(description='Product views CRUDE')
 class ProductViewSet(ModelViewSet):
+    """
+    Набор представлений для действий над Product.
+
+    Полный CRUD для сущностей товара
+    """
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [
@@ -28,11 +40,32 @@ class ProductViewSet(ModelViewSet):
         OrderingFilter,
     ]
     search_fields = ['name', 'description', ]
-    filterset_fields = ['name', 'price', 'description', 'discount', 'archived', ]
+    filterset_fields = [
+        'name', 'price', 'description', 'discount', 'archived',
+    ]
     ordering_fields = ['pk', 'name', 'price', 'discount', ]
+
+    @extend_schema(
+        summary='Get one product by ID',
+        description='Retrieves **product**, return 404 if not found',
+        responses={
+            200: ProductSerializer,
+            404: OpenApiResponse(description='Empty response, product by id not found')
+        },
+
+    )
+    def retrieve(self, *args, **kwargs):
+        return super().retrieve(*args, **kwargs)
 
 
 class OrderViewSet(ModelViewSet):
+    """
+    Вьюсет (ViewSet) для работы с заказами.
+
+    Позволяет выполнять операции CRUD (Create, Retrieve, Update, Delete)
+    над заказами.
+    """
+
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     filter_backends = [
@@ -46,17 +79,36 @@ class OrderViewSet(ModelViewSet):
 
 
 class ShopIndexView(View):
+    """
+    Класс ShopIndexView является представлением на основе классов в Django.
+
+    Он предназначен для обработки HTTP GET-запросов и
+    отображения страницы магазина.
+    """
+
     def get(self, request: HttpRequest):
+        """
+        Этот метод обрабатывает HTTP GET-запрос и возвращает HttpResponse.
+
+        Он извлекает информацию о продуктах и автомобилях,
+        подготавливает контекст и отображает HTML-шаблон
+        'shopapp/shop-index.html' с предоставленным контекстом.
+        """
+
         products = [
             ('Bmw', 15000),
             ('Toyota', 10000),
             ('Жигули', 2000),
         ]
         auto = [
-            {'name': 'Bmw', 'price': 15000, 'currency': '€', 'country': 'Германия'},
-            {'name': 'Toyota', 'price': 10000, 'currency': '$', 'country': 'Япония'},
-            {'name': 'Жигули', 'price': 2000000, 'currency': '₽', 'country': 'Россия'},
-            {'name': 'Honda', 'price': 9000, 'currency': '$', 'country': 'Япония'},
+            {'name': 'Bmw', 'price': 15000,
+             'currency': '€', 'country': 'Германия'},
+            {'name': 'Toyota', 'price': 10000, ''
+             'currency': '$', 'country': 'Япония'},
+            {'name': 'Жигули', 'price': 2000000,
+             'currency': '₽', 'country': 'Россия'},
+            {'name': 'Honda', 'price': 9000,
+             'currency': '$', 'country': 'Япония'},
         ]
         context = {
             'time_running': default_timer,
@@ -111,7 +163,9 @@ class ProductUpdateView(UserPassesTestMixin, UpdateView):
         is_author = self.request.user == product.created_by
         if (is_superuser or (has_permission and is_author)):
             return True
-        raise PermissionDenied("You don't have permission to edit this product.")
+        raise PermissionDenied(
+            "You don't have permission to edit this product."
+        )
 
     model = Product
     # fields = 'name', 'price', 'description', 'discount', 'preview'

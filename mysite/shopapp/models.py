@@ -5,6 +5,12 @@ from  django.contrib.auth.models import User
 def product_preview_directory_path(instance: 'Product', filename: str) -> str:
     return f'products/product_{instance.pk}/preview/{filename}'
 class Product(models.Model):
+    """
+    Модель Product представляет товар,
+    который можно продавать в интернет-магазине.
+
+    Заказы тут: :model:`shopapp.Order`
+    """
     class Meta:
         ordering = ['-name']
     name = models.CharField(max_length=100)
