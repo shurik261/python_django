@@ -9,12 +9,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from .forms import ProductForm
 from .models import Product, Order, ProductImage
 from .serializers import ProductSerializer
 
-
+@extend_schema(description='Product views CRUDE')
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -36,6 +36,17 @@ class ProductViewSet(ModelViewSet):
         "price",
         "discount",
     ]
+    @extend_schema(
+        summary='Get one product by ID',
+        description='Retrieves **product**, return 404 if not found',
+        responses={
+            200: ProductSerializer,
+            404: OpenApiResponse(description='Empty response, product by id not found')
+        },
+
+    )
+    def retrieve(self, *args, **kwargs):
+        return super().retrieve(*args, **kwargs)
 
 
 class ShopIndexView(View):
