@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
 
 
+
     'shopapp.apps.ShopappConfig',
     'myauth.apps.MyauthConfig',
     'myapiapp.apps.MyapiappConfig',
