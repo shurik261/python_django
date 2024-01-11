@@ -1,0 +1,3 @@
+2024-01-10 13:46:19,604 [INFO] django.utils.autoreload: C:\Users\User\PycharmProjects\python_django\mysite\mysite\settings.py changed, reloading.
+2024-01-10 13:46:20,695 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-10 16:18:19,546 [INFO] django.utils.autoreload: Watching for file changes with StatReloader

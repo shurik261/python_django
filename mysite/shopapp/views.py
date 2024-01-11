@@ -3,6 +3,7 @@
 
 Разные view для интернет-магазина: по товарам, заказам и т.д.
 """
+import logging
 from timeit import default_timer
 from django.contrib.auth.models import Group
 from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
@@ -23,6 +24,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from .serializers import ProductSerializer, OrderSerializer
+log = logging.getLogger(__name__)
 
 @extend_schema(description='Product views CRUDE')
 class ProductViewSet(ModelViewSet):
@@ -115,6 +117,8 @@ class ShopIndexView(View):
             'products': products,
             'auto': auto
         }
+        log.debug('Products for shop index. %s', products)
+        log.info('Rendering shop index')
         return render(request, 'shopapp/shop-index.html', context=context)
 
 

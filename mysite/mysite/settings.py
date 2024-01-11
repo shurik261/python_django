@@ -30,6 +30,9 @@ SECRET_KEY = 'django-insecure-pjmjwj_=&ey(msrz!a9$!r2sr)!81mc^8m#dx^4tarxek_$(77
 DEBUG = True
 
 ALLOWED_HOSTS = []
+INTERNAL_IPS = [
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
     'requestdataapp.apps.RequestdataappConfig',
     'myauth.apps.MyauthConfig',
     'myapiapp.apps.MyapiappConfig',
+    'debug_toolbar',
     'rest_framework',
     'django_filters',
     'drf_spectacular',
@@ -64,6 +68,7 @@ MIDDLEWARE = [
     'requestdataapp.middlewares.IPThrottleMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.admindocs.middleware.XViewMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 
 ]
 
@@ -174,24 +179,56 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+# LOGGING = {
+#     'version': 1,
+#     'filters': {
+#         'require_debug_true': {
+#             '()': 'django.utils.log.RequireDebugTrue',
+#         }
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'filters': ['require_debug_true'],
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'level': 'DEBUG',
+#             'handlers': ['console'],
+#         }
+#     },
+# }
+LOGFILE_NAME = BASE_DIR / 'log1.txt'
+LOGFILE_SIZE = 1 * 1024 * 1024
+LOGFILE_COUNT = 3
 LOGGING = {
     'version': 1,
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        }
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+        },
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
+        'logfile': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGFILE_NAME,
+            'maxBytes': LOGFILE_SIZE,
+            'backupCount': LOGFILE_COUNT,
+            'formatter': 'verbose',
         }
     },
+    'root': {
+        'handlers': [
+            'console',
+            'logfile',
+        ],
+        'level': 'INFO',
+    }
 }
