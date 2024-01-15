@@ -28,6 +28,7 @@ PyQt5==5.15.6
 PyQt5-Qt5==5.15.2
 PyQt6-sip==13.6.0
 pytz==2023.3.post1
+PyYAML==6.0.1
 referencing==0.32.1
 requests==2.26.0
 rpds-py==0.16.2
