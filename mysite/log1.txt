@@ -38,3 +38,34 @@
 2024-01-11 18:25:44,085 [INFO] shopapp.views: Rendering shop index
 2024-01-12 11:48:55,194 [INFO] django.utils.autoreload: C:\Users\shuri\PycharmProjects\python_django\mysite\mysite\settings.py changed, reloading.
 2024-01-12 11:48:58,438 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 12:32:51,596 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 12:32:58,865 [INFO] shopapp.views: Rendering shop index
+2024-01-19 12:33:19,879 [WARNING] django.request: Not Found: /ru/shop/products/export
+2024-01-19 12:35:21,305 [WARNING] django.request: Not Found: /ru/shop/products/export
+2024-01-19 12:44:06,225 [ERROR] django.request: Internal Server Error: /ru/shop/orders/export/
+Traceback (most recent call last):
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\site-packages\django\views\generic\base.py", line 84, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\site-packages\django\views\generic\base.py", line 119, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\shuri\PycharmProjects\python_django\mysite\shopapp\views.py", line 260, in get
+    return JsonResponse({'orders': orders_data})
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\site-packages\django\http\response.py", line 653, in __init__
+    data = json.dumps(data, cls=encoder, **json_dumps_params)
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\json\__init__.py", line 234, in dumps
+    return cls(
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\json\encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\json\encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\site-packages\django\core\serializers\json.py", line 106, in default
+    return super().default(o)
+  File "C:\Users\shuri\AppData\Local\Programs\Python\Python39\lib\json\encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type User is not JSON serializable
+2024-01-19 12:55:29,421 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 12:55:36,649 [INFO] shopapp.views: Rendering shop index

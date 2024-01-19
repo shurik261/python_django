@@ -36,6 +36,14 @@ ALLOWED_HOSTS = [
 INTERNAL_IPS = [
     '127.0.0.1'
 ]
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS.append('10.0.2.2')
+    INTERNAL_IPS.extend(
+        [ip[: ip.rfind('.')]+'.1' for ip in ips]
+    )
+
 
 
 # Application definition

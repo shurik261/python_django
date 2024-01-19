@@ -1,0 +1,21 @@
+2024-01-19 17:00:20,534 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 17:00:20,534 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 17:00:21,193 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:00:41,051 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 17:02:25,549 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 17:02:44,831 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:02:47,537 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:06:10,242 [INFO] django.utils.autoreload: C:\Users\shuri\PycharmProjects\python_django\logging\mysite\shopapp\views.py changed, reloading.
+2024-01-19 17:06:12,184 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 17:06:12,869 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:06:15,353 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:06:16,153 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:06:16,843 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:06:17,379 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:06:17,809 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:06:18,017 [INFO] shopapp.views: Rendering shop index
+2024-01-19 17:09:44,017 [INFO] django.utils.autoreload: C:\Users\shuri\PycharmProjects\python_django\logging\mysite\shopapp\views.py changed, reloading.
+2024-01-19 17:09:46,148 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 17:25:23,260 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2024-01-19 17:25:46,076 [WARNING] django.request: Not Found: /orders
+2024-01-19 17:26:00,185 [INFO] shopapp.views: Rendering shop index
