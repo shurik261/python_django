@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'shopapp.apps.ShopappConfig',
     'requestdataapp.apps.RequestdataappConfig',
     'myauth.apps.MyauthConfig',
@@ -64,6 +65,7 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     'django.contrib.admindocs',
+    'blogapp.apps.BlogappConfig',
 
 
 ]

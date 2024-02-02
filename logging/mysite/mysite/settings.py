@@ -13,13 +13,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 
 from django.urls import reverse_lazy
-import sentry_sdk
+# import sentry_sdk
 
-sentry_sdk.init(
-    dsn="https://031b522e8a0549702d9633e759cfb1a4@o4506596654907392.ingest.sentry.io/4506596663033856",
-    traces_sample_rate=1.0,
-    profiles_sample_rate=1.0,
-)
+# sentry_sdk.init(
+#     dsn="https://031b522e8a0549702d9633e759cfb1a4@o4506596654907392.ingest.sentry.io/4506596663033856",
+#     traces_sample_rate=1.0,
+#     profiles_sample_rate=1.0,
+# )
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

@@ -1,5 +1,6 @@
 from timeit import default_timer
 
+from django.contrib.syndication.views import Feed
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, reverse
 from django.urls import reverse_lazy
@@ -76,11 +77,11 @@ class ProductUpdateView(UpdateView):
     template_name_suffix = "_update_form"
     form_class = ProductForm
 
-    def get_success_url(self):
-        return reverse(
-            "shopapp:product_details",
-            kwargs={"pk": self.object.pk},
-        )
+    # def get_success_url(self):
+    #     return reverse(
+    #         "shopapp:product_details",
+    #         kwargs={"pk": self.object.pk},
+    #     )
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -135,3 +136,21 @@ class ProductsDataExportView(View):
             for product in products
         ]
         return JsonResponse({"products": products_data})
+
+
+class LatestProductFeed(Feed):
+    title = 'Shop products (latest)'
+    description = 'Обновления об изменениях и дополнениях в статьях блога'
+    link = reverse_lazy('shopapp:products_list')
+    def items(self):
+        return (
+            Product.objects
+            .filter(created_at__isnull=False)
+            .order_by('-created_at')
+        )
+
+    def item_title(self, item: Product):
+        return item.name
+
+    def item_description(self, item: Product):
+        return item.description[:200]
