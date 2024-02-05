@@ -1,3 +1,5 @@
+import csv
+
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
@@ -123,13 +125,31 @@ class OrderAdmin(admin.ModelAdmin):
     def user_verbose(self, obj: Order) -> str:
         return obj.user.first_name or obj.user.username
     change_list_template = 'shopapp/orders_changelist.html'
-    def import_csv(self, request: HttpRequest) -> HttpResponse:
 
-        form = CSVImportForm()
-        context = {
-                'form': form,
-        }
-        return render(request, 'admin/csv_form.html', context)
+    def import_csv(self, request: HttpRequest) -> HttpResponse:
+        if request.method == 'POST':
+            form = CSVImportForm(request.POST, request.FILES)
+            if form.is_valid():
+                csv_file = request.FILES['csv_file']
+                decoded = csv_file.read().decode('utf-8').splitlines()
+                reader = csv.DictReader(decoded)
+                for row in reader:
+                    order = Order.objects.create(
+                        delivery_address=row['delivery_address'],
+                        promocode=row['promocode'],
+                        user_id=row['user_id'],
+                        receipt=row['receipt']
+                    )
+                    product_ids = [int(product_id) for product_id in row['products'].split(',')]
+                    order.products.set(product_ids)
+
+                self.message_user(request, 'Заказы успешно импортированы')
+                return redirect('..')
+
+        else:
+            form = CSVImportForm()
+
+        return render(request, 'admin/csv_form.html', {'form': form})
 
     def get_urls(self):
         urls = super().get_urls()

@@ -14,3 +14,4 @@ class ShopSitemap(Sitemap):
 
     def lastmod(self, obj: Product):
         return obj.created_at
+
