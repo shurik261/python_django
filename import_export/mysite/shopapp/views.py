@@ -50,6 +50,7 @@ class ShopIndexView(View):
             "time_running": default_timer(),
             "products": products,
         }
+        print('shop index context', context)
         return render(request, 'shopapp/shop-index.html', context=context)
 
 

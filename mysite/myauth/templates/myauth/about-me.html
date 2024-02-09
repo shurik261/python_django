@@ -1,4 +1,5 @@
 {% extends 'myauth/base.html'%}
+{% load cache %}
 
 {%block title%}
   About me
@@ -6,7 +7,9 @@
 
 {% block body %}
     <h1>About info1</h1>
+    Products available: {% now 'u'%}
     {% if user.is_authenticated %}
+        {% cache 200 userinfo user.username%}
         {% if user.profile.avatar %}
             <img src="{{ user.profile.avatar.url }}" alt="User Avatar">
         {% else %}
@@ -24,6 +27,7 @@
             {{ form.as_p }}
             <button type="submit">Update Avatar</button>
         </form>
+        {% endcache %}
     {% else %}
         <h2>User is anonymous</h2>
     {% endif %}

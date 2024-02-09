@@ -1,18 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>
-    {% block title %}
-      Base Title
-    {% endblock %}
-  </title>
+    <meta charset="UTF-8">
+    <title>
+        {%block title%}
+            Block title
+        {%endblock%}
+    </title>
+    <style>
+    a {text-decoration: none;
+       color: brown;
+       font-size: 20px;
+    }
+    .a1 {
+        color: blue;
+        font-size: 15px;
+    }
+    a:hover {
+        color: light-red;
+        text-decoration: underline;
+    }
+    </style>
 </head>
 <body>
-
-{% block body %}
-  Base body
-{% endblock %}
+{%block body%}
+     Block body
+{%endblock%}
+<div>
+    {%now 'H: i'%}
+</div>
+<div>
+    {% now 'l' as week_day%}
+    Сегодня: {{week_day}}
+</div>
+</body>
+</html>
 
 </body>
 </html>

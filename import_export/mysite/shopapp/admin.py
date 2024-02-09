@@ -138,7 +138,7 @@ class OrderAdmin(admin.ModelAdmin):
                         delivery_address=row['delivery_address'],
                         promocode=row['promocode'],
                         user_id=row['user_id'],
-                        receipt=row['receipt']
+
                     )
                     product_ids = [int(product_id) for product_id in row['products'].split(',')]
                     order.products.set(product_ids)

@@ -1,10 +1,14 @@
 from csv import DictWriter
 from timeit import default_timer
 
+from django.contrib.auth.models import User
+from django.core import cache
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, get_object_or_404
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from rest_framework.parsers import MultiPartParser
@@ -14,7 +18,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
-
+from django.core.cache import cache
+from shopapp.serializers import OrderSerializer
 from .common import save_csv_products
 from .forms import ProductForm
 from .models import Product, Order, ProductImage
@@ -167,14 +172,51 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
 
 class ProductsDataExportView(View):
     def get(self, request: HttpRequest) -> JsonResponse:
-        products = Product.objects.order_by('pk').all()
-        products_data = [
-            {
-                "pk": product.pk,
-                "name": product.name,
-                "price": product.price,
-                "archived": product.archived,
-            }
-            for product in products
-        ]
+        cache_key = 'products_data_export'
+        products_data = cache.get(cache_key)
+        if products_data is None:
+            products = Product.objects.order_by('pk').all()
+            products_data = [
+                {
+                    "pk": product.pk,
+                    "name": product.name,
+                    "price": product.price,
+                    "archived": product.archived,
+                }
+                for product in products
+            ]
+            cache.set(cache_key, products_data, 300)
         return JsonResponse({"products": products_data})
+
+
+class UserOrdersListView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = 'order_list1.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        user_id = self.kwargs.get('user_id')
+        user = get_object_or_404(User, id=user_id)
+        self.owner = user
+        return Order.objects.filter(user=user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['owner'] = self.owner
+        return context
+
+
+class UserOrdersExportView(View):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        cache_key = f'user_order{user_id}'
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            return JsonResponse(cached_data, safe=False)
+        orders = Order.objects.filter(user=user).order_by('pk')
+        serializer = OrderSerializer(orders, many=True)
+        data = serializer.data
+        cache.set(cache_key, data, 300)
+        return JsonResponse(data, safe=False)
+
+

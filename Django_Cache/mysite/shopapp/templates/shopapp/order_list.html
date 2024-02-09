@@ -1,11 +1,12 @@
 {% extends 'shopapp/base.html' %}
-
+{% load cache %}
 {% block title %}
   Orders list
 {% endblock %}
 
 {% block body %}
   <h1>Orders:</h1>
+  <p>Пользователь {{ owner.username }} выполнил следующие заказы:</p>
   {% if object_list %}
     <div>
       {% for order in object_list %}
@@ -18,10 +19,11 @@
           <div>
             Product in order:
             <ul>
+              {% cache 300 order_info owner.username %}
               {% for product in order.products.all %}
                 <li>{{ product.name }} for ${{ product.price }}</li>
               {% endfor %}
-
+              {% endcache%}
             </ul>
           </div>
 

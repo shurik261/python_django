@@ -29,6 +29,8 @@ from csv import DictWriter
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from .serializers import ProductSerializer, OrderSerializer
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 log = logging.getLogger(__name__)
 
@@ -65,6 +67,11 @@ class ProductViewSet(ModelViewSet):
     )
     def retrieve(self, *args, **kwargs):
         return super().retrieve(*args, **kwargs)
+
+    @method_decorator(cache_page(60 + 2))
+    def list(self, *args, **kwargs):
+        print('products export')
+        return super().list(*args, **kwargs)
 
     @action(methods=['get'], detail=False)
     def download_csv(self, request: Request):
@@ -124,6 +131,7 @@ class OrderViewSet(ModelViewSet):
 
 
 class ShopIndexView(View):
+
     """
     Класс ShopIndexView является представлением на основе классов в Django.
 
@@ -131,6 +139,7 @@ class ShopIndexView(View):
     отображения страницы магазина.
     """
 
+    #@method_decorator(cache_page(60 * 2))
     def get(self, request: HttpRequest):
         """
         Этот метод обрабатывает HTTP GET-запрос и возвращает HttpResponse.
@@ -162,6 +171,7 @@ class ShopIndexView(View):
         }
         log.debug('Products for shop index. %s', products)
         log.info('Rendering shop index')
+        print('shop index context', context)
         return render(request, 'shopapp/shop-index.html', context=context)
 
 
@@ -300,4 +310,5 @@ class OrderExportView(View):
             }
             for order in orders
         ]
+
         return JsonResponse({'orders': orders_data})
