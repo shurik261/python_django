@@ -9,6 +9,7 @@
   <p>Пользователь {{ owner.username }} выполнил следующие заказы:</p>
   {% if object_list %}
     <div>
+      {% cache 300 order_info owner.username %}
       {% for order in object_list %}
         <div>
           <p><a href="{% url 'shopapp:order_details' pk=order.pk %}"
@@ -19,17 +20,16 @@
           <div>
             Product in order:
             <ul>
-              {% cache 300 order_info owner.username %}
               {% for product in order.products.all %}
                 <li>{{ product.name }} for ${{ product.price }}</li>
               {% endfor %}
-              {% endcache%}
+
             </ul>
           </div>
 
         </div>
       {% endfor %}
-
+      {% endcache%}
     </div>
   {% else %}
     <h3>No orders yet</h3>
