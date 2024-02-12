@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+import django.core.cache.backends.filebased
 from django.urls import reverse_lazy
 
 from  django.utils.translation import gettext_lazy as _
@@ -29,10 +30,21 @@ SECRET_KEY = 'django-insecure-pjmjwj_=&ey(msrz!a9$!r2sr)!81mc^8m#dx^4tarxek_$(77
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+    '127.0.0.1'
+]
 INTERNAL_IPS = [
     '127.0.0.1'
 ]
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS.append('10.0.2.2')
+    INTERNAL_IPS.extend(
+        [ip[: ip.rfind('.')]+'.1' for ip in ips]
+    )
+
 
 
 # Application definition
@@ -44,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'shopapp.apps.ShopappConfig',
     'requestdataapp.apps.RequestdataappConfig',
     'myauth.apps.MyauthConfig',
@@ -53,11 +66,13 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     'django.contrib.admindocs',
+    'blogapp.apps.BlogappConfig',
 
 
 ]
 
 MIDDLEWARE = [
+    #'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,6 +84,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.admindocs.middleware.XViewMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'django.middleware.cache.FetchFromCacheMiddleware',
 
 ]
 
@@ -102,7 +118,13 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+CACHES = {
+    'default': {
+      'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+      'LOCATION': 'C:/ cache/tmp'
+    },
+}
+CACHE_MIDDLEWARE_SECONDS = 200
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

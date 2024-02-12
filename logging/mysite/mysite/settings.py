@@ -13,7 +13,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 
 from django.urls import reverse_lazy
+# import sentry_sdk
 
+# sentry_sdk.init(
+#     dsn="https://031b522e8a0549702d9633e759cfb1a4@o4506596654907392.ingest.sentry.io/4506596663033856",
+#     traces_sample_rate=1.0,
+#     profiles_sample_rate=1.0,
+# )
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,8 +33,20 @@ SECRET_KEY = 'django-insecure-hvxn%qq=gyw^4*o2lo1#bw0=wh#ux9s8h!=@c608arf_gz3+^7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+    '127.0.0.1'
+]
+INTERNAL_IPS = [
+    '127.0.0.1'
+]
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS.append('10.0.2.2')
+    INTERNAL_IPS.extend(
+        [ip[: ip.rfind('.')]+'.1' for ip in ips]
+    )
 
 # Application definition
 
@@ -40,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'debug_toolbar',
     'rest_framework',
     'django_filters',
 
@@ -55,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -144,3 +164,37 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = reverse_lazy("myauth:about-me")
 LOGIN_URL = reverse_lazy("myauth:login")
+
+
+LOGFILE_NAME = BASE_DIR / 'log1.txt'
+LOGFILE_SIZE = 1 * 1024 * 1024
+LOGFILE_COUNT = 3
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'logfile': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGFILE_NAME,
+            'maxBytes': LOGFILE_SIZE,
+            'backupCount': LOGFILE_COUNT,
+            'formatter': 'verbose',
+        }
+    },
+    'root': {
+        'handlers': [
+            'console',
+            'logfile',
+        ],
+        'level': 'INFO',
+    }
+}

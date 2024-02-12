@@ -6,7 +6,7 @@
 import logging
 from timeit import default_timer
 from django.contrib.auth.models import Group
-from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
+from django.http import HttpRequest, HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
@@ -17,14 +17,23 @@ from django.contrib.auth.mixins import LoginRequiredMixin, \
     PermissionDenied
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 
+from rest_framework.request import Request
+from rest_framework.response import Response
+from .common import save_csv_products
 from .models import Product, Order, ProductImage
 from .forms import GroupForm, ProductForm
-
+from rest_framework.parsers import MultiPartParser
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
+from csv import DictWriter
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from .serializers import ProductSerializer, OrderSerializer
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
 log = logging.getLogger(__name__)
+
 
 @extend_schema(description='Product views CRUDE')
 class ProductViewSet(ModelViewSet):
@@ -59,6 +68,47 @@ class ProductViewSet(ModelViewSet):
     def retrieve(self, *args, **kwargs):
         return super().retrieve(*args, **kwargs)
 
+    @method_decorator(cache_page(60 + 2))
+    def list(self, *args, **kwargs):
+        print('products export')
+        return super().list(*args, **kwargs)
+
+    @action(methods=['get'], detail=False)
+    def download_csv(self, request: Request):
+        response = HttpResponse(content_type='text/csv')
+        filename = 'import-products.csv'
+        response['Content-Desposition'] = f'Attachment; filename={filename}'
+        queryset = self.filter_queryset(self.get_queryset())
+        fields = [
+            'name',
+            'description',
+            'price',
+            'discount',
+        ]
+        queryset = queryset.only(*fields)
+        writer = DictWriter(response, fieldnames=fields)
+        writer.writeheader()
+
+        for product in queryset:
+            writer.writerow({
+                field: getattr(product, field)
+                for field in fields
+            })
+        return response
+
+    @action(
+        detail=False,
+        methods=['post'],
+        parser_classes=[MultiPartParser],
+    )
+    def upload_csv(self, request: Request):
+        products = save_csv_products(
+            request.FILES['files'].file,
+            encoding=request.encoding
+        )
+        serializer = self.get_serializer(products, many=True)
+        return Response(serializer.data)
+
 
 class OrderViewSet(ModelViewSet):
     """
@@ -81,6 +131,7 @@ class OrderViewSet(ModelViewSet):
 
 
 class ShopIndexView(View):
+
     """
     Класс ShopIndexView является представлением на основе классов в Django.
 
@@ -88,6 +139,7 @@ class ShopIndexView(View):
     отображения страницы магазина.
     """
 
+    #@method_decorator(cache_page(60 * 2))
     def get(self, request: HttpRequest):
         """
         Этот метод обрабатывает HTTP GET-запрос и возвращает HttpResponse.
@@ -106,7 +158,7 @@ class ShopIndexView(View):
             {'name': 'Bmw', 'price': 15000,
              'currency': '€', 'country': 'Германия'},
             {'name': 'Toyota', 'price': 10000, ''
-             'currency': '$', 'country': 'Япония'},
+                                               'currency': '$', 'country': 'Япония'},
             {'name': 'Жигули', 'price': 2000000,
              'currency': '₽', 'country': 'Россия'},
             {'name': 'Honda', 'price': 9000,
@@ -119,6 +171,7 @@ class ShopIndexView(View):
         }
         log.debug('Products for shop index. %s', products)
         log.info('Rendering shop index')
+        print('shop index context', context)
         return render(request, 'shopapp/shop-index.html', context=context)
 
 
@@ -206,8 +259,8 @@ class ProductDeleteView(DeleteView):
 class OrderListView(LoginRequiredMixin, ListView):
     queryset = (
         Order.objects.
-        select_related('user').
-        prefetch_related('products')
+            select_related('user').
+            prefetch_related('products')
     )
 
 
@@ -215,8 +268,8 @@ class OrderDetailsView(PermissionRequiredMixin, DetailView):
     permission_required = 'shopapp.view_order'
     queryset = (
         Order.objects.
-        select_related('user').
-        prefetch_related('products')
+            select_related('user').
+            prefetch_related('products')
     )
 
 
@@ -257,4 +310,5 @@ class OrderExportView(View):
             }
             for order in orders
         ]
+
         return JsonResponse({'orders': orders_data})

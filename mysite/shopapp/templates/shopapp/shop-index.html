@@ -1,4 +1,5 @@
 {% extends 'shopapp/base.html'%}
+{% load cache %}
 {% block title %}
 Base Title
 {% endblock%}
@@ -30,7 +31,9 @@ Base Title
 <div>
     Timer : {{ time_running }}
 </div>
+    {% cache 200 lorem %}
 <div>
     {% lorem 3 p random %}
 </div>
+    {% endcache %}
 {% endblock%}
