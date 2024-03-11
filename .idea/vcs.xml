@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/prod" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/prod/Django-app" vcs="Git" />
   </component>
 </project>
