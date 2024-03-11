@@ -38,7 +38,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1'
 ] + getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 INTERNAL_IPS = [
-    '127.0.0.1'
+    '127.0.0.1',
+    '0.0.0.0',
 ]
 if DEBUG:
     import socket
